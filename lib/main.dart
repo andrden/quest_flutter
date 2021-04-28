@@ -1,7 +1,15 @@
 import 'package:background_location/background_location.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'dart:async';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final FirebaseApp app = await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -10,7 +18,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int points = 0;
-  String latitude = 'waiting...';
+  String latitude = 'waiting ...';
   String longitude = 'waiting...';
   String altitude = 'waiting...';
   String accuracy = 'waiting...';
@@ -74,6 +82,11 @@ class _MyAppState extends State<MyApp> {
                         Speed: $speed
                         Time: $time
                       ''');
+
+                      FirebaseDatabase.instance
+                          .reference()
+                          .child("questF/d1")
+                          .set({"aa": 5, "points": points});
                     });
                   },
                   child: Text('Start Location Service')),
