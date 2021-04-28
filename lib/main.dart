@@ -5,6 +5,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'dart:async';
 
+// flutter build apk --split-per-abi
+
+var id = 'F${DateTime.now().millisecondsSinceEpoch % 10000}';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final FirebaseApp app = await Firebase.initializeApp();
@@ -85,8 +89,15 @@ class _MyAppState extends State<MyApp> {
 
                       FirebaseDatabase.instance
                           .reference()
-                          .child("questF/d1")
-                          .set({"aa": 5, "points": points});
+                          //.child("questF/$id")
+                          .child("quest/$id")
+                          .set({
+                        "latitude": location.latitude,
+                        "longitude": location.longitude,
+                        "points": points,
+                        "t": DateTime.now().millisecondsSinceEpoch,
+                        "tStr": DateTime.now().toUtc().toIso8601String()
+                      });
                     });
                   },
                   child: Text('Start Location Service')),
