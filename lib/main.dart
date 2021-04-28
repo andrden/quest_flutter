@@ -5,6 +5,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'dart:async';
 
+import 'package:flutter_tts/flutter_tts.dart';
+
 // flutter build apk --split-per-abi
 
 var id = 'F${DateTime.now().millisecondsSinceEpoch % 10000}';
@@ -21,7 +23,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  FlutterTts flutterTts = FlutterTts();
+
   int points = 0;
+  String permissionsStatus = 'permissions...';
   String latitude = 'waiting ...';
   String longitude = 'waiting...';
   String altitude = 'waiting...';
@@ -46,6 +51,7 @@ class _MyAppState extends State<MyApp> {
           child: ListView(
             children: <Widget>[
               locationData('Points: ${points}'),
+              locationData('${permissionsStatus}'),
               locationData('Latitude: ' + latitude),
               locationData('Longitude: ' + longitude),
               locationData('Altitude: ' + altitude),
@@ -60,9 +66,15 @@ class _MyAppState extends State<MyApp> {
                       message: 'Quest: location in progress',
                       icon: '@mipmap/ic_launcher',
                     );
+                    _speak();
                     //await BackgroundLocation.setAndroidConfiguration(1000);
-                    await BackgroundLocation.startLocationService(
-                        distanceFilter: 3);
+                    // await BackgroundLocation.startLocationService(
+                    //     distanceFilter: 3);
+                    permissionsStatus =
+                        (await BackgroundLocation.checkPermissions())
+                            .toString();
+                    setState(() {});
+                    await BackgroundLocation.startLocationService();
                     BackgroundLocation.getLocationUpdates((location) {
                       setState(() {
                         points++;
@@ -116,6 +128,11 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  Future _speak() async {
+    var result = await flutterTts.speak("Start");
+    //if (result == 1) setState(() => ttsState = TtsState.playing);
   }
 
   Widget locationData(String data) {
