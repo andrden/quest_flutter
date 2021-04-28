@@ -9,13 +9,14 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  background_location: ^0.5.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  background_location:
-    path: ../
+#  background_location:
+#    path: ../
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

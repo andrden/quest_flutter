@@ -9,6 +9,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  int points = 0;
   String latitude = 'waiting...';
   String longitude = 'waiting...';
   String altitude = 'waiting...';
@@ -32,6 +33,7 @@ class _MyAppState extends State<MyApp> {
         body: Center(
           child: ListView(
             children: <Widget>[
+              locationData('Points: ${points}'),
               locationData('Latitude: ' + latitude),
               locationData('Longitude: ' + longitude),
               locationData('Altitude: ' + altitude),
@@ -43,14 +45,15 @@ class _MyAppState extends State<MyApp> {
                   onPressed: () async {
                     await BackgroundLocation.setAndroidNotification(
                       title: 'Background service is running',
-                      message: 'Background location in progress',
+                      message: 'Quest: location in progress',
                       icon: '@mipmap/ic_launcher',
                     );
                     //await BackgroundLocation.setAndroidConfiguration(1000);
                     await BackgroundLocation.startLocationService(
-                        distanceFilter: 20);
+                        distanceFilter: 3);
                     BackgroundLocation.getLocationUpdates((location) {
                       setState(() {
+                        points++;
                         latitude = location.latitude.toString();
                         longitude = location.longitude.toString();
                         accuracy = location.accuracy.toString();
@@ -62,6 +65,7 @@ class _MyAppState extends State<MyApp> {
                             .toString();
                       });
                       print('''\n
+                        Points: $points
                         Latitude:  $latitude
                         Longitude: $longitude
                         Altitude: $altitude
